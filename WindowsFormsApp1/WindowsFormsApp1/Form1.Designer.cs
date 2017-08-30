@@ -52,8 +52,13 @@
             // 
             // messageRichTextBox
             // 
+            this.messageRichTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.messageRichTextBox.Location = new System.Drawing.Point(12, 12);
             this.messageRichTextBox.Name = "messageRichTextBox";
+            this.messageRichTextBox.ReadOnly = true;
+            this.messageRichTextBox.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.ForcedBoth;
             this.messageRichTextBox.Size = new System.Drawing.Size(260, 210);
             this.messageRichTextBox.TabIndex = 2;
             this.messageRichTextBox.Text = "";

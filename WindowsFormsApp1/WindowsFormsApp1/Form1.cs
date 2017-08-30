@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Net;
 using System.Net.Sockets;
@@ -21,22 +15,35 @@ namespace WindowsFormsApp1
 
         const int PORT = 54545;
         const string broadcastAddress = "255.255.255.255";
+        string ip = "";
 
         UdpClient receivingClient;
         UdpClient sendingClient;
 
         Thread receivingThread;
 
+        public string getIp()
+        {
+            string strHostName = "";
+            strHostName = System.Net.Dns.GetHostName();
+
+            IPHostEntry ipEntry = System.Net.Dns.GetHostEntry(strHostName);
+
+            IPAddress[] addr = ipEntry.AddressList;
+
+            return addr[addr.Length - 1].ToString();
+        }
+
         public chatFrom()
         {
             InitializeComponent();
-            this.Load += new EventHandler(chatFrom_Load);
-            sendButton.Click += new EventHandler(sendButton_Click);
         }
 
         void chatFrom_Load(object sender, EventArgs e)
         {
+            this.AcceptButton = sendButton;
             messageTextBox.Focus();
+            ip = getIp();
             InitializeSender();
             InitializeReceiver();
         }
@@ -63,13 +70,14 @@ namespace WindowsFormsApp1
 
             if (!string.IsNullOrEmpty(messageTextBox.Text))
             {
-                string toSend = ":\n" + messageTextBox.Text;
+                string toSend = ip + " :\n" + messageTextBox.Text;
                 byte[] data = Encoding.ASCII.GetBytes(toSend);
                 sendingClient.Send(data, data.Length);
                 messageTextBox.Text = "";
             }
 
             messageTextBox.Focus();
+            messageRichTextBox.ScrollToCaret();
         }
 
         private void Receiver()
@@ -82,15 +90,15 @@ namespace WindowsFormsApp1
                 byte[] data = receivingClient.Receive(ref endPoint);
                 string message = Encoding.ASCII.GetString(data);
                 Invoke(messageDelegate, message);
+                
             }
         }
 
         private void MessageReceived(string message)
         {
             messageRichTextBox.Text += message + "\n";
+            messageRichTextBox.SelectionStart = messageRichTextBox.Text.Length;
+            messageRichTextBox.ScrollToCaret();
         }
-
-
     }
-
 }
